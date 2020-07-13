@@ -20,8 +20,8 @@ module HelloWorldRails
       g.javascripts false
       g.stylesheets false
       g.helper false
-      g.test_framework false
       g.template_engine false
+      g.test_framework :rspec
     end
 
     config.api_only = true

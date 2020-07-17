@@ -71,7 +71,19 @@ RSpec.describe "Users", type: :request do
   end
 
   describe "PATCH(PUT) /users/:id" do
+    subject { patch(user_path(user_id), params: params) }
+
+    let(:params) do
+      { user: { name: Faker::Name.name, created_at: 1.day.ago } }
+    end
+    let(:user_id) { user.id }
+    let(:user) { create(:user) }
+
     it "任意のユーザーのレコードを更新できる" do
+      expect { subject }.to change { user.reload.name }.from(user.name).to(params[:user][:name]) &
+                            not_change { user.reload.account } &
+                            not_change { user.reload.email } &
+                            not_change { user.reload.created_at }
     end
   end
 

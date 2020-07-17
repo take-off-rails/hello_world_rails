@@ -16,7 +16,30 @@ RSpec.describe "Users", type: :request do
   end
 
   describe "GET /users/:id" do
-    it "任意のユーザーのレコードが取得できる" do
+    subject { get(user_path(user_id)) }
+
+    context "指定した id のユーザーが存在するとき" do
+      let(:user_id) { user.id }
+      let(:user) { create(:user) }
+
+      it "そのユーザーのレコードが取得できる" do
+        subject
+
+        res = JSON.parse(response.body)
+        expect(res["name"]).to eq user.name
+        expect(res["account"]).to eq user.account
+        expect(res["email"]).to eq user.email
+
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context "指定した id のユーザーが存在しないとき" do
+      let(:user_id) { 100000 }
+
+      it "ユーザーが見つからない" do
+        expect { subject }.to raise_error(ActiveRecord::RecordNotFound)
+      end
     end
   end
 

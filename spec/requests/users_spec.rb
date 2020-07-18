@@ -88,7 +88,12 @@ RSpec.describe "Users", type: :request do
   end
 
   describe "DELETE /users/:id" do
+    subject { delete(user_path(user_id)) }
+    let(:user_id) { user.id }
+    let!(:user) { create(:user) }
+
     it "任意のユーザーのレコードを削除できる" do
+      expect { subject }.to change { User.count }.by(-1)
     end
   end
 end
